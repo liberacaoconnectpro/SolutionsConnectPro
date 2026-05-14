@@ -9,28 +9,23 @@ function createWindow() {
     width: 1280,
     height: 800,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true, // Melhor prática de segurança
+      preload: path.join(__dirname, 'preload.cjs')
     },
     title: 'FisioConnect Pro'
   });
 
-  // Verifica se estamos em ambiente de desenvolvimento ou produção
-  // No AI Studio, usamos o arquivo gerado (dist/index.html) para o build final
   const isDev = process.env.NODE_ENV === 'development';
 
   if (isDev) {
-    // Em dev local, você pode carregar da porta do Vite
-    mainWindow.loadURL('http://localhost:3000');
-  } else {
-    // Em produção (ou após o build), carregamos o arquivo estático
-    const indexPath = path.join(__dirname, 'dist', 'index.html');
-    mainWindow.loadFile(indexPath);
-  }
-
-  // Opcional: Abre o DevTools se estiver em dev
-  if (isDev) {
+    mainWindow.loadURL('http://localhost:3000').catch(() => {
+      console.log('Servidor dev não encontrado em :3000, tentando carregar arquivo local...');
+      mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'));
+    });
     mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'));
   }
 }
 

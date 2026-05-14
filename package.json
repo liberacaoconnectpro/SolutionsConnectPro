@@ -18,7 +18,8 @@
     "productName": "FisioConnect Pro",
     "files": [
       "dist/**/*",
-      "electron-main.cjs"
+      "electron-main.cjs",
+      "preload.cjs"
     ],
     "directories": {
       "output": "release"
