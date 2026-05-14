@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { signOut } from 'firebase/auth';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+// @ts-ignore
 import guideContent from './guide.md?raw';
 
 enum OperationType {
