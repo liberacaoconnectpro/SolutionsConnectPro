@@ -1,12 +1,17 @@
 {
   "name": "react-example",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "version": "0.0.0",
   "type": "module",
   "main": "electron-main.cjs",
   "scripts": {
-    "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build",
+    "dev": "npm run dev:fisio",
+    "dev:fisio": "npm run dev --workspace=@connect-erp/fisio",
+    "build": "npm run build --workspace=@connect-erp/fisio",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",

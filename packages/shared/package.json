@@ -1,0 +1,12 @@
+{
+  "name": "@connect-erp/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "react": "^19.0.1",
+    "firebase": "^12.13.0",
+    "lucide-react": "^1.14.0"
+  }
+}

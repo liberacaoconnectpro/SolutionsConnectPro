@@ -1,0 +1,13 @@
+{
+  "name": "@connect-erp/database",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "drizzle-orm": "^0.29.3"
+  },
+
+  "devDependencies": {
+    "drizzle-kit": "^0.20.13"
+  }
+}
