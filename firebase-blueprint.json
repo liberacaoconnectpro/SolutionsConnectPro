@@ -1,0 +1,24 @@
+{
+  "entities": {
+    "Licenca": {
+      "title": "Licenca",
+      "description": "Licença de uso para o ConnectPro",
+      "type": "object",
+      "properties": {
+        "status": { "type": "boolean", "description": "Se a licença está ativa" },
+        "validade": { "type": "number", "description": "Data de validade da licença em ms" },
+        "device_id": { "type": "string", "description": "HWID da máquina" },
+        "clienteNome": { "type": "string" },
+        "sistema": { "type": "string", "enum": ["Fisio", "PetShop"] },
+        "userId": { "type": "string" }
+      },
+      "required": ["status", "validade", "device_id", "clienteNome", "sistema", "userId"]
+    }
+  },
+  "firestore": {
+    "/licencas/{licencaId}": {
+      "schema": "Licenca",
+      "description": "Armazena as licenças dos clientes. O ID do documento deve ser igual ao userId."
+    }
+  }
+}

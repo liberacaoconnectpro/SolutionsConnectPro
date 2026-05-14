@@ -1,0 +1,17 @@
+{
+  "name": "fisio-connect-pro",
+  "version": "1.0.0",
+  "description": "App Cliente FisioConnectPro com controle de licença e claims",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.5.0",
+    "firebase": "^10.14.0",
+    "node-machine-id": "^1.1.12"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}
