@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, db } from '@connect-erp/shared/lib/firebase';
+import { auth, db, getMachineId } from '@connect-erp/shared';
 import { LayoutDashboard, Users, FileText, DollarSign, LogOut, Calendar, MessageSquare, UserCircle, Settings, ShieldCheck, Clock, Activity, TrendingUp, CheckCircle2, ChevronRight, UserPlus } from 'lucide-react';
 import { 
   DashboardView, 
@@ -13,7 +13,6 @@ import {
   PacienteDetailView, 
   MensagensView 
 } from './components';
-import { getMachineId } from '@connect-erp/shared/lib/desktopUtils';
 
 export default function FisioApp({ onBack }: { onBack: () => void }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

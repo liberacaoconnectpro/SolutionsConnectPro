@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, UserPlus, Save, Loader2 } from 'lucide-react';
-import { dbService } from '@connect-erp/shared/services/dbService';
+import { dbService } from '@connect-erp/shared';
 
 export function NovoPacienteModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);

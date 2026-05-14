@@ -5,10 +5,9 @@
 
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from '@connect-erp/shared/lib/firebase';
+import { auth, dbService } from '@connect-erp/shared';
 import Login from './Login';
 import Dashboard from './AdminApp';
-import { dbService } from '@connect-erp/shared/services/dbService';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);

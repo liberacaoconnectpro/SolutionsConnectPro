@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Calendar, Users, DollarSign, Activity, TrendingUp, CheckCircle2, ChevronRight } from 'lucide-react';
-import { dbService } from '@connect-erp/shared/services/dbService';
+import { dbService } from '@connect-erp/shared';
 
 export function DashboardView() {
   const [patients, setPatients] = useState<any[]>([]);

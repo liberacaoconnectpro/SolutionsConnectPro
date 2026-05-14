@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { collection, onSnapshot, doc, updateDoc, deleteDoc, addDoc, setDoc } from 'firebase/firestore';
-import { db, auth } from '@connect-erp/shared/lib/firebase';
+import { db, auth } from '@connect-erp/shared';
 import { LogOut, MonitorSmartphone, ShieldBan, ShieldCheck, Plus, Trash2, Calendar, LayoutDashboard, FileKey, ShieldAlert, CheckCircle2, Code } from 'lucide-react';
 import { format } from 'date-fns';
 import { signOut } from 'firebase/auth';

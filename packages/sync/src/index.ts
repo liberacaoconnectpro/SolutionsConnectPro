@@ -1,7 +1,7 @@
 import { db, schema } from '@connect-erp/database';
 import { eq, and } from 'drizzle-orm';
 import { collection, writeBatch, serverTimestamp, getDocs, query, where, doc } from 'firebase/firestore';
-import { db as firestoreDb } from '@connect-erp/shared/lib/firebase';
+import { db as firestoreDb } from '@connect-erp/shared';
 
 /**
  * PUSH: Envia dados locais pendentes para a Nuvem

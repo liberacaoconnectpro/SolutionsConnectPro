@@ -1,6 +1,6 @@
 import { LogIn, Monitor } from 'lucide-react';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '@connect-erp/shared/lib/firebase';
+import { auth } from '@connect-erp/shared';
 
 export default function Login({ onGoToFisio, onGoToPet }: { onGoToFisio?: () => void; onGoToPet?: () => void }) {
   const handleLogin = async () => {

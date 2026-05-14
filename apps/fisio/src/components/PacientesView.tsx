@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Filter, User, MoreHorizontal, UserCheck } from 'lucide-react';
 import { NovoPacienteModal } from './NovoPacienteModal';
-import { dbService } from '@connect-erp/shared/services/dbService';
+import { dbService } from '@connect-erp/shared';
 
 export function PacientesView({ onViewPatient }: { onViewPatient: (patient: any) => void }) {
   const [isNovoPacienteOpen, setIsNovoPacienteOpen] = useState(false);

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { auth } from '@connect-erp/shared/lib/firebase';
+import { auth } from '@connect-erp/shared';
 import { PawPrint, LogOut, Settings, Users, Calendar } from 'lucide-react';
 
 export default function PetApp({ onBack }: { onBack: () => void }) {
