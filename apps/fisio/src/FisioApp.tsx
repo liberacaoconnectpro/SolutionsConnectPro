@@ -3,14 +3,14 @@ import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } f
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@connect-erp/shared/lib/firebase';
 import { LayoutDashboard, Users, FileText, DollarSign, LogOut, Calendar, MessageSquare, UserCircle, Settings, ShieldCheck, Clock, Activity, TrendingUp, CheckCircle2, ChevronRight, UserPlus } from 'lucide-react';
-import { DashboardView } from './components/DashboardView';
-import { PacientesView } from './components/PacientesView';
-import { AgendaView } from './components/AgendaView';
-import { FinanceiroView } from './components/FinanceiroView';
-import { EquipeView } from './components/EquipeView';
-import { OpcoesView } from './components/OpcoesView';
-import { PacienteDetailView } from './components/PacienteDetailView';
-import { MensagensView } from './components/MensagensView';
+import { DashboardView } from '@/components/DashboardView';
+import { PacientesView } from '@/components/PacientesView';
+import { AgendaView } from '@/components/AgendaView';
+import { FinanceiroView } from '@/components/FinanceiroView';
+import { EquipeView } from '@/components/EquipeView';
+import { OpcoesView } from '@/components/OpcoesView';
+import { PacienteDetailView } from '@/components/PacienteDetailView';
+import { MensagensView } from '@/components/MensagensView';
 import { getMachineId } from '@connect-erp/shared/lib/desktopUtils';
 
 export default function FisioApp({ onBack }: { onBack: () => void }) {
