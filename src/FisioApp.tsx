@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from './lib/firebase';
-import { LayoutDashboard, Users, FileText, DollarSign, LogOut, Calendar, MessageSquare, UserCircle, Settings, ShieldCheck, Clock, Activity, TrendingUp, CheckCircle2, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, DollarSign, LogOut, Calendar, MessageSquare, UserCircle, Settings, ShieldCheck, Clock, Activity, TrendingUp, CheckCircle2, ChevronRight, UserPlus } from 'lucide-react';
 import { DashboardView } from './components/DashboardView';
 import { PacientesView } from './components/PacientesView';
 import { AgendaView } from './components/AgendaView';
@@ -11,14 +11,25 @@ import { EquipeView } from './components/EquipeView';
 import { OpcoesView } from './components/OpcoesView';
 import { PacienteDetailView } from './components/PacienteDetailView';
 import { MensagensView } from './components/MensagensView';
+import { getMachineId } from './lib/desktopUtils';
 
 export default function FisioApp({ onBack }: { onBack: () => void }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'pacientes' | 'agenda' | 'financeiro' | 'equipe' | 'opcoes' | 'mensagens'>('dashboard');
   const [selectedPatient, setSelectedPatient] = useState<any | null>(null);
+  
+  // Login State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
+  // Register State
+  const [regName, setRegName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [regClinicName, setRegClinicName] = useState('');
+  
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -30,9 +41,6 @@ export default function FisioApp({ onBack }: { onBack: () => void }) {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      
-      // Simula a verificação das claims (na web a gente não vai barrar por claim pra não travar a demo, 
-      // verificamos direto os dados do Firestore simulando a trava do Main Process do Electron)
       
       const licencaRef = doc(db, 'licencas', user.uid);
       const licencaSnap = await getDoc(licencaRef);
@@ -71,11 +79,61 @@ export default function FisioApp({ onBack }: { onBack: () => void }) {
     } catch (err: any) {
       console.error(err);
       if (err.code === 'auth/operation-not-allowed') {
-        setError('O login por Email/Senha não está habilitado no Firebase. Habilite-o no Console do Firebase (Authentication > Sign-in method).');
+        setError('O login por Email/Senha não está habilitado no Firebase.');
       } else {
         setError(err.message || 'Credenciais inválidas.');
       }
       await signOut(auth);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      // 1. Criar usuário no Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, regEmail, regPassword);
+      const user = userCredential.user;
+
+      // 2. Pegar Device ID (HWID)
+      const deviceId = await getMachineId();
+
+      // 3. Criar documento de Licença no Firestore
+      // 14 dias de validade
+      const validadeInMs = Date.now() + (14 * 24 * 60 * 60 * 1000);
+
+      await setDoc(doc(db, 'licencas', user.uid), {
+        status: true,
+        validade: validadeInMs,
+        device_id: deviceId,
+        clienteNome: regName,
+        nomeClinica: regClinicName,
+        sistema: 'Fisio',
+        userId: user.uid,
+        createdAt: Date.now()
+      });
+
+      // 4. Logar com sucesso
+      setIsLoggedIn(true);
+      setShowRegisterModal(false);
+      // Limpar campos
+      setRegName('');
+      setRegEmail('');
+      setRegPassword('');
+      setRegClinicName('');
+    } catch (err: any) {
+      console.error(err);
+      if (err.code === 'auth/email-already-in-use') {
+        setError('Este e-mail já está cadastrado.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('A senha deve ter pelo menos 6 caracteres.');
+      } else {
+        setError(err.message || 'Erro ao realizar cadastro.');
+      }
     } finally {
       setLoading(false);
     }
@@ -251,7 +309,7 @@ export default function FisioApp({ onBack }: { onBack: () => void }) {
         </nav>
         <div className="flex items-center gap-3">
            <button onClick={() => setShowLoginModal(true)} className="px-5 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Entrar</button>
-           <button className="px-5 py-2 text-sm font-medium text-purple-700 bg-purple-200 rounded-lg hover:bg-purple-300 transition-colors hidden sm:block">Começar grátis</button>
+           <button onClick={() => setShowRegisterModal(true)} className="px-5 py-2 text-sm font-medium text-purple-700 bg-purple-200 rounded-lg hover:bg-purple-300 transition-colors hidden sm:block">Começar grátis</button>
            <button onClick={onBack} className="text-xs text-slate-400 hover:text-slate-600 ml-4 hidden lg:block border-l border-slate-200 pl-4">Voltar ao ADM</button>
         </div>
       </header>
@@ -272,7 +330,7 @@ export default function FisioApp({ onBack }: { onBack: () => void }) {
                Plataforma completa para fisioterapeutas: agenda inteligente, prontuário clínico, financeiro e comunicação com a equipe — tudo em um só lugar.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
-               <button className="w-full sm:w-auto px-8 py-3.5 bg-purple-200 hover:bg-purple-300 text-purple-800 font-bold rounded-xl transition-colors">
+               <button onClick={() => setShowRegisterModal(true)} className="w-full sm:w-auto px-8 py-3.5 bg-purple-200 hover:bg-purple-300 text-purple-800 font-bold rounded-xl transition-colors">
                   Começar 14 dias grátis
                </button>
                <button className="w-full sm:w-auto px-8 py-3.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium rounded-xl transition-colors">
@@ -395,6 +453,100 @@ export default function FisioApp({ onBack }: { onBack: () => void }) {
                  className="mt-3 w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center shadow-sm">
                 Acessar sem Login (Modo Demo)
               </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Register Modal Overlay */}
+      {showRegisterModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+          <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 relative">
+            <button 
+              onClick={() => setShowRegisterModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition-colors"
+              aria-label="Fechar"
+            >
+              &times;
+            </button>
+
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center font-bold text-4xl text-white shadow-md">
+                <UserPlus className="w-8 h-8" />
+              </div>
+            </div>
+            
+            <h2 className="text-2xl font-bold text-center text-slate-800 mb-2 tracking-tight">Criar Conta</h2>
+            <p className="text-center text-sm text-slate-500 mb-6 border-b border-slate-100 pb-6">Comece seus 14 dias de teste grátis</p>
+            
+            <form onSubmit={handleRegister} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Seu Nome</label>
+                <input 
+                   type="text" 
+                   required 
+                   value={regName}
+                   onChange={e => setRegName(e.target.value)}
+                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-shadow" 
+                   placeholder="João Silva" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Nome da Clínica</label>
+                <input 
+                   type="text" 
+                   required 
+                   value={regClinicName}
+                   onChange={e => setRegClinicName(e.target.value)}
+                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-shadow" 
+                   placeholder="Minha Clínica Fisio" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">E-mail</label>
+                <input 
+                   type="email" 
+                   required 
+                   value={regEmail}
+                   onChange={e => setRegEmail(e.target.value)}
+                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-shadow" 
+                   placeholder="contato@clinica.com" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Senha</label>
+                <input 
+                   type="password" 
+                   required 
+                   value={regPassword}
+                   onChange={e => setRegPassword(e.target.value)}
+                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-shadow" 
+                   placeholder="••••••••" 
+                />
+              </div>
+              
+              {error && (
+                <div className="bg-rose-50 border border-rose-200 text-rose-700 text-xs px-3 py-3 rounded-lg leading-relaxed">
+                  {error}
+                </div>
+              )}
+
+              <button 
+                 type="submit" 
+                 disabled={loading}
+                 className="mt-2 w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center shadow-sm disabled:opacity-70 disabled:cursor-not-allowed">
+                {loading ? 'Criando Conta...' : 'Cadastrar e Começar'}
+              </button>
+              
+              <div className="text-center mt-4">
+                <button 
+                  type="button"
+                  onClick={() => { setShowRegisterModal(false); setShowLoginModal(true); }}
+                  className="text-xs text-slate-500 hover:text-purple-600 font-medium"
+                >
+                  Já tem uma conta? Entrar
+                </button>
+              </div>
             </form>
           </div>
         </div>

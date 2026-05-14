@@ -9,6 +9,7 @@
         "validade": { "type": "number", "description": "Data de validade da licença em ms" },
         "device_id": { "type": "string", "description": "HWID da máquina" },
         "clienteNome": { "type": "string" },
+        "nomeClinica": { "type": "string" },
         "sistema": { "type": "string", "enum": ["Fisio", "PetShop"] },
         "userId": { "type": "string" }
       },
