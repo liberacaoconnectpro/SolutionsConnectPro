@@ -15,10 +15,12 @@
     "moduleDetection": "force",
     "allowJs": true,
     "jsx": "react-jsx",
+    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@connect-erp/shared": ["packages/shared/src/index.ts"],
+      "@connect-erp/database": ["packages/database/src/index.ts"],
+      "@connect-erp/sync": ["packages/sync/src/index.ts"]
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
