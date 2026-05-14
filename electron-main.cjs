@@ -1,23 +1,48 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const { machineIdSync } = require('node-machine-id');
+
+let mainWindow;
 
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false, // Simplificando para o exemplo, em produção use preload.js
-    }
+      contextIsolation: false,
+    },
+    title: 'FisioConnect Pro'
   });
 
-  // Em produção, carregamos o arquivo gerado pelo Vite (dist/index.html)
-  const indexPath = path.join(__dirname, 'dist', 'index.html');
-  mainWindow.loadFile(indexPath);
+  // Verifica se estamos em ambiente de desenvolvimento ou produção
+  // No AI Studio, usamos o arquivo gerado (dist/index.html) para o build final
+  const isDev = process.env.NODE_ENV === 'development';
 
-  // Opcional: Abre o DevTools
-  // mainWindow.webContents.openDevTools();
+  if (isDev) {
+    // Em dev local, você pode carregar da porta do Vite
+    mainWindow.loadURL('http://localhost:3000');
+  } else {
+    // Em produção (ou após o build), carregamos o arquivo estático
+    const indexPath = path.join(__dirname, 'dist', 'index.html');
+    mainWindow.loadFile(indexPath);
+  }
+
+  // Opcional: Abre o DevTools se estiver em dev
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 }
+
+// Canal IPC para pegar o ID da máquina (HWID)
+ipcMain.handle('get-hwid', () => {
+  try {
+    return machineIdSync(true); // true = raw GUID
+  } catch (error) {
+    console.error('Erro ao pegar HWID:', error);
+    return 'ID_NAO_DISPONIVEL';
+  }
+});
 
 app.whenReady().then(() => {
   createWindow();
