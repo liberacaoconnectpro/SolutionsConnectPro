@@ -8,14 +8,16 @@
   "version": "0.0.0",
   "type": "module",
   "main": "electron-main.cjs",
+  "packageManager": "npm@10.9.7",
   "scripts": {
-    "dev": "vite",
+    "dev": "turbo run dev",
     "dev:fisio": "npm run dev --workspace=@connect-erp/fisio",
+    "dev:pet": "npm run dev --workspace=@connect-erp/pet",
     "dev:admin": "npm run dev --workspace=@connect-erp/admin",
-    "build": "npm run build --workspace=@connect-erp/fisio",
+    "build": "turbo run build",
     "preview": "vite preview",
-    "clean": "rm -rf dist",
-    "lint": "tsc --noEmit",
+    "clean": "turbo run clean",
+    "lint": "turbo run lint",
     "electron:dev": "cross-env NODE_ENV=development electron .",
     "electron:build": "npm run build && electron-builder"
   },
@@ -66,6 +68,7 @@
     "lucide-react": "^1.14.0",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
+    "turbo": "^2.9.12",
     "typescript": "~5.8.2",
     "vite": "^6.2.3"
   }
