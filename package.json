@@ -9,8 +9,9 @@
   "type": "module",
   "main": "electron-main.cjs",
   "scripts": {
-    "dev": "npm run dev:fisio",
+    "dev": "vite",
     "dev:fisio": "npm run dev --workspace=@connect-erp/fisio",
+    "dev:admin": "npm run dev --workspace=@connect-erp/admin",
     "build": "npm run build --workspace=@connect-erp/fisio",
     "preview": "vite preview",
     "clean": "rm -rf dist",
