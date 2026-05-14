@@ -63,8 +63,30 @@ service cloud.firestore {
           incoming().device_id.size() <= 200
         )
       );
+    }
 
-      allow list: if isAdmin(); // users typically don't list, they get their own via doc(db, 'licencas', uid)
+    match /pacientes/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /consultas/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /profissionais/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /clinic/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /transactions/{id} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /messages/{id} {
+      allow read, write: if isSignedIn();
     }
   }
 }

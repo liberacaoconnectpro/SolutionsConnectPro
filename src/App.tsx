@@ -9,6 +9,7 @@ import { auth } from './lib/firebase';
 import Login from './Login';
 import Dashboard from './Dashboard';
 import FisioApp from './FisioApp';
+import { dbService } from './services/dbService';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -19,6 +20,11 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
+      if (currentUser) {
+        dbService.init().catch(err => {
+          console.error("Erro na inicialização (Seed):", err);
+        });
+      }
     });
     return () => unsubscribe();
   }, []);
