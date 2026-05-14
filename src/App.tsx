@@ -14,7 +14,7 @@ import { dbService } from './services/dbService';
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState<'admin' | 'fisio'>('admin');
+  const [view, setView] = useState<'admin' | 'fisio'>('fisio');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
